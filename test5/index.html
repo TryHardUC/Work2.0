@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h2>Регистрация</h2>
+    <div id="error-message" style="color: red;"></div>
+    <form id="registration-form">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" required>
+        <br><br>
+        <label for="surname">Фамилия:</label>
+        <input type="text" id="surname" name="surname" required>
+        <br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
+        <br><br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+        <br><br>
+        <label for="confirmPassword">Повторите пароль:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <br><br>
+        <input type="submit" value="Зарегистрироваться">
+    </form>
+    <div id="success-message" style="display: none; color: green;">Регистрация успешна!</div>
+
+    <script>
+        $(document).ready(function () {
+            $("#registration-form").submit(function (e) {
+                e.preventDefault();
+                var name = $("#name").val();
+                var surname = $("#surname").val();
+                var email = $("#email").val();
+                var password = $("#password").val();
+                var confirmPassword = $("#confirmPassword").val();
+
+                if (password !== confirmPassword) {
+                    $("#error-message").text("Пароли не совпадают");
+                } else if (!email.includes("@")) {
+                    $("#error-message").text("Некорректный email");
+                } else {
+                    $.ajax({
+                        url: "register.php",
+                        type: "POST",
+                        data: {
+                            name: name,
+                            surname: surname,
+                            email: email,
+                            password: password,
+                            confirmPassword: confirmPassword
+                        },
+                        success: function (response) {
+                            if (response === "success") {
+                                $("#registration-form").hide();
+                                $("#success-message").show();
+                            } else {
+                                $("#error-message").text(response);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
